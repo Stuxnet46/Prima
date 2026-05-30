@@ -183,6 +183,7 @@ tfoot td{background:var(--bg2)!important}
 .pin-zero-pos{grid-column:2}
 .pin-error-msg{text-align:center;font-size:11px;color:var(--red);height:16px;margin-top:4px}
 .pin-copyright{text-align:center;font-size:10px;color:var(--txt4);margin-top:18px}
+@keyframes fadeup{0%{opacity:0;transform:translateX(-50%) translateY(10px)}100%{opacity:1;transform:translateX(-50%) translateY(0)}}
 </style>
 </head>
 <body>
@@ -242,6 +243,29 @@ tfoot td{background:var(--bg2)!important}
         <option value="TLW">TLW</option>
       </select>
       <button class="theme-btn" id="tbtn" onclick="tgl()" title="Dark / Light Mode">☀️</button>
+      <button onclick="exportData()" title="Export backup data" style="
+        height:36px;padding:0 11px;border-radius:9px;border:1.5px solid var(--G2);
+        background:var(--GL);color:var(--G1);font-size:11px;font-weight:700;
+        cursor:pointer;font-family:var(--sans);flex-shrink:0;transition:all .2s;white-space:nowrap;"
+        onmouseover="this.style.background='var(--GM)'" onmouseout="this.style.background='var(--GL)'">
+        &#x1F4E5; Export
+      </button>
+      <label title="Import backup data" style="
+        height:36px;padding:0 11px;border-radius:9px;border:1.5px solid var(--border2);
+        background:var(--bg3);color:var(--txt2);font-size:11px;font-weight:700;
+        cursor:pointer;font-family:var(--sans);flex-shrink:0;transition:all .2s;white-space:nowrap;
+        display:flex;align-items:center;"
+        onmouseover="this.style.background='var(--GL);this.style.borderColor=var(--G2)'" onmouseout="this.style.background='var(--bg3)'">
+        &#x1F4E4; Import
+        <input type="file" accept=".json" style="display:none" onchange="handleImport(event)">
+      </label>
+      <button onclick="clearData()" title="Hapus semua data" style="
+        height:36px;padding:0 10px;border-radius:9px;border:1.5px solid #fca5a5;
+        background:#fff1f2;color:#dc2626;font-size:11px;font-weight:700;
+        cursor:pointer;font-family:var(--sans);flex-shrink:0;transition:all .2s;white-space:nowrap;"
+        onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fff1f2'">
+        &#x1F5D1; Reset
+      </button>
     </div>
   </div>
 
@@ -253,7 +277,10 @@ tfoot td{background:var(--bg2)!important}
   <!-- FOOTER -->
   <div class="footer-bar">
     <strong>PRIMA</strong> &mdash; Platform Realisasi &amp; Intelligence Monitoring Agen46<br>
-    &copy; Gentara Anugrah &middot; All Rights Reserved &middot; 2026
+    &copy; Gentara Anugrah &middot; All Rights Reserved &middot; 2026<br>
+    <span style="font-size:9px;color:var(--txt4);margin-top:4px;display:inline-block">
+      &#x1F4BE; Data tersimpan otomatis &middot; Gunakan Export untuk backup sebelum hapus history browser
+    </span>
   </div>
 </div>
 
@@ -290,6 +317,64 @@ const BU={akuisisi:10,casa:25,produktivitas:20,fbi:25,transaksi:20};
 const BB={downline:5,wondr:5};
 const FL=['akuisisi','casa','produktivitas','fbi','transaksi','downline','wondr'];
 const GT=MO.map((_,i)=>({akuisisi:4,casa:75000000*(i+1),produktivitas:171+i*5,fbi:31500000,transaksi:10000,downline:1,wondr:50}));
+
+// Target hardcoded per pengelola (CASA = nilai absolut, Produktivitas = nilai absolut per bulan)
+const PRESET_TGT = {
+  PLP: [
+    {casa:8093642516,produktivitas:74},  // Jan
+    {casa:8168642516,produktivitas:79},  // Feb
+    {casa:8243642516,produktivitas:84},  // Mar
+    {casa:8318642516,produktivitas:89},  // Apr
+    {casa:8393642516,produktivitas:94},  // Mei
+    {casa:8468642516,produktivitas:99},  // Jun
+    {casa:8543642516,produktivitas:104}, // Jul
+    {casa:8618642516,produktivitas:109}, // Agu
+    {casa:8693642516,produktivitas:114}, // Sep
+    {casa:8768642516,produktivitas:119}, // Okt
+    {casa:8843642516,produktivitas:124}, // Nov
+    {casa:8918642516,produktivitas:129}, // Des
+  ],
+  TLW: [
+    {casa:10649861094,produktivitas:96},  // Jan
+    {casa:10724861094,produktivitas:101}, // Feb
+    {casa:10799861094,produktivitas:106}, // Mar
+    {casa:10874861094,produktivitas:111}, // Apr
+    {casa:10949861094,produktivitas:116}, // Mei
+    {casa:11024861094,produktivitas:121}, // Jun
+    {casa:11099861094,produktivitas:126}, // Jul
+    {casa:11174861094,produktivitas:131}, // Agu
+    {casa:11249861094,produktivitas:136}, // Sep
+    {casa:11324861094,produktivitas:141}, // Okt
+    {casa:11399861094,produktivitas:146}, // Nov
+    {casa:11474861094,produktivitas:151}, // Des
+  ],
+  ALS: [
+    {casa:7024946991,produktivitas:76},  // Jan
+    {casa:7099946991,produktivitas:81},  // Feb
+    {casa:7174946991,produktivitas:86},  // Mar
+    {casa:7249946991,produktivitas:91},  // Apr
+    {casa:7324946991,produktivitas:96},  // Mei
+    {casa:7399946991,produktivitas:101}, // Jun
+    {casa:7474946991,produktivitas:106}, // Jul
+    {casa:7549946991,produktivitas:111}, // Agu
+    {casa:7624946991,produktivitas:116}, // Sep
+    {casa:7699946991,produktivitas:121}, // Okt
+    {casa:7774946991,produktivitas:126}, // Nov
+    {casa:7849946991,produktivitas:131}, // Des
+  ],
+};
+// Baku sama dengan GTR untuk kolom lain
+const BAKU = {akuisisi:4, fbi:31500000, transaksi:10000, downline:1, wondr:50};
+// Gabungkan preset + baku menjadi target lengkap per pengelola
+function getTgt(p, mi) {
+  if (p === 'GTR') return GT[mi];
+  if (PRESET_TGT[p]) {
+    const pr = PRESET_TGT[p][mi];
+    return { ...BAKU, casa: pr.casa, produktivitas: pr.produktivitas };
+  }
+  // GRD: masih manual dari state
+  return null;
+}
 const er=()=>Object.fromEntries(FL.map(f=>[f,'']));
 const em=()=>MO.map(()=>er());
 let ST={},AP='GTR',AM=0,VW='dash',ER=false,ET=false,DARK=false;
@@ -311,8 +396,11 @@ function initD(){
 function pc(r,t){if(r===''||r===null||r===undefined||!Number(t))return null;return(Number(r)/Number(t))*100;}
 function cp(p,c){return p===null?null:Math.min(p,c);}
 function scr(p,b){return p===null?null:(p/100)*b;}
-function ca(real,rawT,isG,mi){
-  const t=isG?GT[mi]:{akuisisi:+rawT.akuisisi||0,casa:+rawT.casa||0,produktivitas:+rawT.produktivitas||0,fbi:+rawT.fbi||0,transaksi:+rawT.transaksi||0,downline:+rawT.downline||0,wondr:+rawT.wondr||0};
+function ca(real,rawT,isG,mi,pengelola){
+  let t;
+  if(isG){ t=GT[mi]; }
+  else if(pengelola && getTgt(pengelola,mi)){ t=getTgt(pengelola,mi); }
+  else { t={akuisisi:+rawT.akuisisi||0,casa:+rawT.casa||0,produktivitas:+rawT.produktivitas||0,fbi:+rawT.fbi||0,transaksi:+rawT.transaksi||0,downline:+rawT.downline||0,wondr:+rawT.wondr||0}; }
   const ct=isG?BC+t.casa:t.casa;
   const pA=pc(real.akuisisi,t.akuisisi),pC=pc(real.casa,ct),pP=pc(real.produktivitas,t.produktivitas),pF=pc(real.fbi,t.fbi),pT=pc(real.transaksi,t.transaksi);
   const ss={akuisisi:scr(pA,BU.akuisisi),casa:scr(pC,BU.casa),produktivitas:scr(pP,BU.produktivitas),fbi:scr(pF,BU.fbi),transaksi:scr(pT,BU.transaksi)};
@@ -370,13 +458,13 @@ function thead(){return`<thead><tr>${TH.map((h,i)=>`<th class="${i<=1?'tl':'tr'}
 // DASHBOARD
 function rDash(){
   const pd=ST[AP],isG=AP==='GTR',real=pd.real[AM],rawT=isG?GT[AM]:pd.tgt[AM];
-  const c=ca(real,rawT,isG,AM),rc=rClr(c.total);
-  const mt=MO.map((_,mi)=>{const r=pd.real[mi],t=isG?GT[mi]:pd.tgt[mi],h=Object.values(r).some(v=>v!==''&&v!==null);return h?ca(r,t,isG,mi).total:null;});
+  const c=ca(real,rawT,isG,AM,AP),rc=rClr(c.total);
+  const mt=MO.map((_,mi)=>{const r=pd.real[mi],t=isG?GT[mi]:pd.tgt[mi],h=Object.values(r).some(v=>v!==''&&v!==null);return h?ca(r,t,isG,mi,AP).total:null;});
   const vl=mt.filter(s=>s!==null),avg=vl.length?vl.reduce((a,b)=>a+b,0)/vl.length:null;
 
   const mbs=MO.map((m,i)=>{
     const r=pd.real[i],h=Object.values(r).some(v=>v!==''&&v!==null),t=isG?GT[i]:pd.tgt[i];
-    const mc=h?ca(r,t,isG,i):null,col=mc?rClr(mc.total):'var(--border2)';
+    const mc=h?ca(r,t,isG,i,AP):null,col=mc?rClr(mc.total):'var(--border2)';
     const isA=AM===i;
     return`<button class="mbtn" onclick="sam(${i})"
       style="background:${isA?col:'var(--bg3)'};border-color:${isA?col:'var(--border)'};color:${isA?'#fff':h?col:'var(--txt4)'};
@@ -447,35 +535,42 @@ function rDash(){
 // SETTING TARGET
 function rTgt(){
   const pd=ST[AP],isG=AP==='GTR';
+  const hasPreset=PRESET_TGT[AP]!==undefined;
+  const isGRD=AP==='GRD';
   const hdrs=['Bulan','Akuisisi','CASA','Produktivitas','FBI','Transaksi','Downline','Wondr'];
-  const flds=['akuisisi','casa','produktivitas','fbi','transaksi','downline','wondr'];
   const ebStyle=`background:${ET?'var(--G1)':'var(--bg3)'};border:1.5px solid ${ET?'var(--G1)':'var(--border)'};color:${ET?'#fff':'var(--txt3)'}`;
   let body='';
-  if(isG){
-    body=GT.map((t,i)=>`<tr>
-      <td class="tl" style="color:var(--txt);font-weight:600">${MO[i]}</td>
-      <td class="tr">${fN(t.akuisisi)}</td><td class="tr">${fN(BC+t.casa)}</td>
-      <td class="tr">${fN(t.produktivitas)}</td><td class="tr">${fN(t.fbi)}</td>
-      <td class="tr">${fN(t.transaksi)}</td><td class="tr">${fN(t.downline)}</td><td class="tr">${fN(t.wondr)}</td>
-    </tr>`).join('');
+  if(isG||hasPreset){
+    body=MO.map((m,mi)=>{
+      const t=isG?GT[mi]:getTgt(AP,mi);
+      const casaVal=isG?BC+t.casa:t.casa;
+      return`<tr>
+        <td class="tl" style="color:var(--txt);font-weight:600">${m}</td>
+        <td class="tr">${fN(t.akuisisi)}</td><td class="tr">${fN(casaVal)}</td>
+        <td class="tr">${fN(t.produktivitas)}</td><td class="tr">${fN(t.fbi)}</td>
+        <td class="tr">${fN(t.transaksi)}</td><td class="tr">${fN(t.downline)}</td><td class="tr">${fN(t.wondr)}</td>
+      </tr>`;
+    }).join('');
   } else {
     body=MO.map((m,mi)=>{
       const t=pd.tgt[mi];
+      const flds=['akuisisi','casa','produktivitas','fbi','transaksi','downline','wondr'];
       const cells=flds.map(f=>{
         const v=t[f];
         return`<td class="tr" style="padding:4px 8px">${ET
           ?`<input type="number" class="inp-field" value="${v}" oninput="ut(${mi},'${f}',this.value)" placeholder="-">`
-          :`<span style="color:${v!==''?'var(--txt)':'var(--txt4)'}">${v!==''?fN(+v):'\u2014'}</span>`}</td>`;
+          :`<span style="color:${v!==''?'var(--txt)':'var(--txt4)'}">${v!==''?fN(+v):'—'}</span>`}</td>`;
       }).join('');
       return`<tr><td class="tl" style="color:var(--txt);font-weight:600">${m}</td>${cells}</tr>`;
     }).join('');
   }
+  const note=isG?'GTR — Target terkunci (data resmi 2026)':hasPreset?`${AP} — Target terkunci (data resmi 2026)`:`${AP} — Input target per bulan`;
   document.getElementById('v-tgt').innerHTML=`
     <div style="margin-bottom:14px">
       <div style="font-size:18px;font-weight:800;color:var(--txt)">Setting Target</div>
-      <div style="font-size:11px;color:var(--txt3);margin-top:3px">${isG?'GTR \u2014 Target terkunci (data resmi 2026)':`${AP} \u2014 Input target per bulan`}</div>
+      <div style="font-size:11px;color:var(--txt3);margin-top:3px">${note}</div>
     </div>
-    ${!isG?`<div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="ebtn" style="${ebStyle}" onclick="tet()">${ET?'\u2713 Selesai Edit':'\u270e Edit Target'}</button></div>`:''}
+    ${isGRD?`<div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="ebtn" style="${ebStyle}" onclick="tet()">${ET?'✓ Selesai Edit':'✎ Edit Target'}</button></div>`:''}
     <div class="sec"><div class="sec-bd">
       <table style="min-width:700px">
         <thead><tr>${hdrs.map((h,i)=>`<th class="${i===0?'tl':'tr'}">${h}</th>`).join('')}</tr></thead>
@@ -484,10 +579,11 @@ function rTgt(){
     </div></div>`;
 }
 
+
 // RANKING
 function rRank(){
   const rows=PE.map(p=>{
-    const d=ST[p],sc2=MO.map((_,mi)=>{const r=d.real[mi],t=p==='GTR'?GT[mi]:d.tgt[mi],h=Object.values(r).some(v=>v!==''&&v!==null);return h?ca(r,t,p==='GTR',mi).total:null;});
+    const d=ST[p],sc2=MO.map((_,mi)=>{const r=d.real[mi],t=p==='GTR'?GT[mi]:d.tgt[mi],h=Object.values(r).some(v=>v!==''&&v!==null);return h?ca(r,t,p==='GTR',mi,p).total:null;});
     const fl=sc2.filter(s=>s!==null),avg=fl.length?fl.reduce((a,b)=>a+b,0)/fl.length:null;
     return{name:p,avg,n:fl.length,sc:sc2};
   }).sort((a,b)=>(b.avg??-1)-(a.avg??-1));
@@ -539,8 +635,8 @@ function sap(p){AP=p;AM=0;ER=false;ET=false;render();}
 function sam(i){AM=i;ER=false;render();}
 function ter(){ER=!ER;render();}
 function tet(){ET=!ET;render();}
-function ur(mi,f,v){ST[AP].real[mi][f]=v===''?'':isNaN(+v)?'':+v;rDash();rRank();}
-function ut(mi,f,v){ST[AP].tgt[mi][f]=v;rDash();rRank();}
+function ur(mi,f,v){ST[AP].real[mi][f]=v===''?'':isNaN(+v)?'':+v;rDash();rRank();saveData();}
+function ut(mi,f,v){ST[AP].tgt[mi][f]=v;rDash();rRank();saveData();}
 
 function tgl(){
   DARK=!DARK;
@@ -549,7 +645,136 @@ function tgl(){
 }
 
 // ═══ BOOT ═════════════════════════════════════════════════════════
-function boot(){mkMarquee();initD();render();}
+// ═══ LOCALSTORAGE ══════════════════════════════════════════════════
+const LS_KEY='prima_kpi_2026';
+
+function saveData(){
+  try{
+    const payload={};
+    PE.forEach(p=>{payload[p]={real:ST[p].real,tgt:ST[p].tgt};});
+    localStorage.setItem(LS_KEY,JSON.stringify(payload));
+  }catch(e){console.warn('Save gagal:',e);}
+}
+
+function loadData(){
+  try{
+    const raw=localStorage.getItem(LS_KEY);
+    if(!raw)return false;
+    const payload=JSON.parse(raw);
+    PE.forEach(p=>{
+      if(payload[p]){
+        if(payload[p].real)ST[p].real=payload[p].real;
+        if(payload[p].tgt)ST[p].tgt=payload[p].tgt;
+      }
+    });
+    return true;
+  }catch(e){console.warn('Load gagal:',e);return false;}
+}
+
+function clearData(){
+  if(!confirm('Hapus semua data realisasi? Tindakan ini tidak bisa dibatalkan.'))return;
+  localStorage.removeItem(LS_KEY);
+  initD();render();
+  showToast('Semua data berhasil dihapus','warn');
+}
+
+function showToast(msg,type='ok'){
+  const old=document.getElementById('_toast');if(old)old.remove();
+  const t=document.createElement('div');t.id='_toast';
+  t.innerHTML=`${type==='ok'?'✓':'⚠'} ${msg}`;
+  t.style.cssText=`position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+    background:${type==='ok'?'#14532d':'#7f1d1d'};color:#fff;
+    padding:11px 24px;border-radius:10px;font-size:12px;font-weight:600;
+    font-family:var(--sans);z-index:9998;box-shadow:0 4px 20px rgba(0,0,0,.3);
+    white-space:nowrap;pointer-events:none;`;
+  document.body.appendChild(t);
+  setTimeout(()=>{t.style.transition='opacity .4s';t.style.opacity='0';setTimeout(()=>t.remove(),420);},2500);
+}
+
+// ═══ EXPORT / IMPORT ═══════════════════════════════════════════════
+function exportData(){
+  try{
+    const payload={};
+    PE.forEach(p=>{payload[p]={real:ST[p].real,tgt:ST[p].tgt};});
+    const json=JSON.stringify({version:'prima_v1',exported:new Date().toISOString(),data:payload},null,2);
+    const blob=new Blob([json],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const now=new Date();
+    const stamp=`${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
+    a.href=url;a.download=`prima-backup-${stamp}.json`;
+    document.body.appendChild(a);a.click();
+    setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},500);
+    showToast('Backup berhasil diunduh ✓');
+  }catch(e){showToast('Export gagal: '+e.message,'warn');}
+}
+
+function handleImport(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const parsed=JSON.parse(ev.target.result);
+      if(!parsed.version||!parsed.version.startsWith('prima')||!parsed.data)
+        throw new Error('File tidak valid. Pastikan file dari PRIMA.');
+      const payload=parsed.data;
+      PE.forEach(p=>{
+        if(payload[p]){
+          if(payload[p].real)ST[p].real=payload[p].real;
+          if(payload[p].tgt)ST[p].tgt=payload[p].tgt;
+        }
+      });
+      saveData();render();
+      const d=new Date(parsed.exported);
+      const tgl=`${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+      showToast(`Import berhasil ✓  (backup: ${tgl})`);
+    }catch(err){showToast('Import gagal: '+err.message,'warn');}
+    e.target.value=''; // reset input agar bisa import file sama lagi
+  };
+  reader.readAsText(file);
+}
+
+function importData(){
+  const input=document.createElement('input');
+  input.type='file';input.accept='.json';
+  input.onchange=e=>{
+    const file=e.target.files[0];
+    if(!file)return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      try{
+        const parsed=JSON.parse(ev.target.result);
+        if(!parsed.version||!parsed.version.startsWith('prima')||!parsed.data)
+          throw new Error('File tidak valid');
+        const payload=parsed.data;
+        let count=0;
+        PE.forEach(p=>{
+          if(payload[p]){
+            if(payload[p].real){ST[p].real=payload[p].real;count++;}
+            if(payload[p].tgt)ST[p].tgt=payload[p].tgt;
+          }
+        });
+        saveData();render();
+        const d=new Date(parsed.exported);
+        const tgl=`${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+        showToast(`Data berhasil diimpor ✓ (backup: ${tgl})`);
+      }catch(err){showToast('Import gagal: '+err.message,'warn');}
+    };
+    reader.readAsText(file);
+  };
+  document.body.appendChild(input);input.click();
+  setTimeout(()=>input.remove(),1000);
+}
+
+// ═══ BOOT ══════════════════════════════════════════════════════════
+function boot(){
+  mkMarquee();
+  initD();
+  const loaded=loadData();
+  render();
+  if(loaded)showToast('Data berhasil dimuat dari penyimpanan');
+}
 </script>
 </body>
 </html>

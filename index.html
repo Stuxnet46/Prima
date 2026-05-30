@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PRIMA — Platform Realisasi & Intelligence Monitoring Agen46</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --G1:#1a6b3a;--G2:#228a4a;--G3:#2aaa5a;--GL:#e8f5ee;--GM:#d0edd9;--GD:#0f4023;
+  --bg:#f2f7f4;--bg2:#ffffff;--bg3:#e8f0eb;
+  --border:#c8ddd0;--border2:#a8c8b4;
+  --txt:#0d2b18;--txt2:#2d5c3e;--txt3:#5a8a6a;--txt4:#8ab89a;
+  --red:#dc2626;--yellow:#d97706;--green:#16a34a;
+  --sans:'Plus Jakarta Sans',sans-serif;--mono:'DM Mono',monospace;
+  --shadow:0 2px 8px rgba(22,90,40,.1);
+  --shadow2:0 4px 20px rgba(22,90,40,.15);
+}
+body{background:var(--bg);color:var(--txt);font-family:var(--sans);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg3)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}
+input[type=number]{-moz-appearance:textfield}
+
+/* ── MARQUEE ──────────────────────────────── */
+.mq-wrap{background:var(--G1);overflow:hidden;padding:7px 0;height:32px}
+.mq-track{display:flex;white-space:nowrap;animation:mq 32s linear infinite;width:max-content}
+.mq-item{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:2.5px;
+  color:rgba(255,255,255,.85);text-transform:uppercase;padding:0 48px;flex-shrink:0}
+.mq-item b{color:#a3f0be;font-weight:700}
+@keyframes mq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── TOPBAR ───────────────────────────────── */
+.topbar{background:var(--bg2);border-bottom:2px solid var(--border);padding:0 16px;
+  box-shadow:0 2px 8px rgba(22,90,40,.08)}
+.topbar-inner{max-width:1140px;margin:0 auto;display:flex;align-items:center;gap:8px;height:58px}
+.logo-box{width:38px;height:38px;border-radius:10px;background:var(--G1);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(22,90,40,.3)}
+.logo-letters{font-family:var(--sans);font-size:13px;font-weight:800;color:#fff;letter-spacing:.5px}
+.logo-name{font-family:var(--sans);font-size:16px;font-weight:800;color:var(--G1);letter-spacing:.5px}
+.logo-sub{font-size:9px;color:var(--txt3);letter-spacing:.3px}
+.nav-btn{padding:6px 13px;border-radius:8px;font-size:12px;font-weight:600;font-family:var(--sans);
+  border:none;background:transparent;color:var(--txt3);cursor:pointer;white-space:nowrap;
+  transition:all .15s}
+.nav-btn.on{background:var(--G1);color:#fff;box-shadow:0 2px 6px rgba(22,90,40,.3)}
+.nav-btn:hover:not(.on){background:var(--GL);color:var(--G1)}
+.psel{padding:6px 10px;border-radius:8px;background:var(--bg3);color:var(--txt);
+  border:1.5px solid var(--border);font-size:11px;font-family:var(--mono);cursor:pointer;
+  flex-shrink:0;outline:none}
+.psel:focus{border-color:var(--G2)}
+.theme-btn{width:36px;height:36px;border-radius:9px;border:1.5px solid var(--border);
+  background:var(--bg3);font-size:16px;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;flex-shrink:0;transition:all .2s;outline:none}
+.theme-btn:hover{border-color:var(--G2);background:var(--GL)}
+
+/* ── DARK MODE ────────────────────────────── */
+body.dark{
+  --bg:#0d1f15;--bg2:#112018;--bg3:#162a1e;
+  --border:#1e3d2a;--border2:#2a5438;
+  --txt:#d4f0df;--txt2:#8abf9a;--txt3:#5a8a6a;--txt4:#2a5438;
+}
+body.dark .topbar{box-shadow:0 2px 8px rgba(0,0,0,.4)}
+body.dark .logo-name{color:#4ade80}
+body.dark .nav-btn.on{background:var(--G2)}
+body.dark .nav-btn:hover:not(.on){background:rgba(42,170,90,.12);color:#4ade80}
+body.dark th{background:var(--bg3)}
+body.dark tr:hover td{background:rgba(255,255,255,.03)!important}
+body.dark .pin-screen-bg{background:radial-gradient(ellipse at 50% 20%,#0d2b1a,#070f0a)}
+body.dark .pin-card-inner{background:linear-gradient(145deg,#0d2218,#081510);border-color:rgba(42,170,90,.2)}
+body.dark .pin-key-btn{background:rgba(42,170,90,.07);border-color:rgba(42,170,90,.15);color:#d4f0df}
+body.dark .pin-key-btn:hover{background:rgba(42,170,90,.15);border-color:rgba(42,170,90,.35)}
+body.dark .pin-dot-el{border-color:rgba(42,170,90,.25)}
+body.dark .sec-bd{background:var(--bg)}
+body.dark .inp-field{background:rgba(42,170,90,.1);border-color:rgba(42,170,90,.3);color:var(--txt)}
+body.dark .psel{background:var(--bg3);color:var(--txt);border-color:var(--border2)}
+body.dark .theme-btn{background:var(--bg3);border-color:var(--border2);color:var(--txt2)}
+body.dark .mq-wrap{background:#0a1e10}
+body.dark .footer-bar{background:var(--bg2);border-top-color:var(--border)}
+body,th,td,.topbar,.sec,.sec-hd,.mq-wrap,.footer-bar,.psel,.scard,.mchip,.rcard,.logo-name{
+  transition:background .25s,color .25s,border-color .25s}
+
+/* ── MAIN ─────────────────────────────────── */
+.main{max-width:1140px;margin:0 auto;padding:18px 14px}
+
+/* ── SECTION ──────────────────────────────── */
+.sec{margin-bottom:12px;border-radius:12px;overflow:hidden;
+  border:1.5px solid var(--border);box-shadow:var(--shadow)}
+.sec-hd{padding:10px 14px;background:var(--bg2);display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--border)}
+.sec-ttl{font-size:12px;font-weight:700;color:var(--txt)}
+.sec-sub{font-size:9px;color:var(--txt4);margin-left:8px}
+.sec-bd{overflow-x:auto;background:var(--bg)}
+
+/* ── TABLE ────────────────────────────────── */
+table{width:100%;border-collapse:collapse}
+th{padding:8px 11px;font-size:10px;font-weight:700;letter-spacing:.8px;color:var(--txt3);
+  border-bottom:1.5px solid var(--border);white-space:nowrap;background:var(--bg3);
+  font-family:var(--sans)}
+td{padding:8px 11px;font-size:12px;color:var(--txt2);border-bottom:1px solid var(--bg3);white-space:nowrap}
+tr:hover td{background:rgba(42,170,90,.04)!important}
+tfoot tr{border-top:2px solid var(--border)}
+tfoot td{background:var(--bg2)!important}
+.tl{text-align:left}.tr{text-align:right}
+
+/* ── INPUT ────────────────────────────────── */
+.inp-field{background:rgba(42,170,90,.08);border:1.5px solid rgba(42,170,90,.3);border-radius:6px;
+  padding:4px 8px;width:100%;min-width:90px;color:var(--txt);font-size:12px;text-align:right;
+  outline:none;font-family:var(--mono);display:block}
+.inp-field:focus{border-color:var(--G2);background:rgba(42,170,90,.12)}
+
+/* ── BADGE / BTN ──────────────────────────── */
+.badge{font-size:9px;font-weight:700;letter-spacing:.8px;padding:3px 8px;border-radius:5px}
+.ebtn{padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;font-family:var(--sans);
+  cursor:pointer;transition:all .15s;outline:none}
+.ebtn:hover{opacity:.85}
+.mbtn{padding:5px 11px;border-radius:6px;font-size:11px;font-weight:600;font-family:var(--sans);
+  cursor:pointer;transition:all .12s;border:1.5px solid}
+.mbtn:hover{transform:scale(.97)}
+
+/* ── SCORE CARDS ──────────────────────────── */
+.scard{padding:11px 16px;border-radius:12px;text-align:center;min-width:95px;
+  box-shadow:var(--shadow)}
+.scard-lbl{font-size:8px;color:var(--txt3);letter-spacing:2px;margin-bottom:3px}
+.scard-val{font-size:21px;font-weight:800;line-height:1.1}
+.scard-sub{font-size:9px;color:var(--txt4);margin-top:2px}
+
+/* ── MONTH CHIPS ──────────────────────────── */
+.mchip{padding:6px 10px;border-radius:7px;text-align:center;min-width:52px}
+.mchip-l{font-size:8px;color:var(--txt3)}
+.mchip-v{font-size:13px;font-weight:700}
+
+/* ── RANK CARD ────────────────────────────── */
+.rcard{flex:1 1 130px;padding:14px 16px;border-radius:12px;box-shadow:var(--shadow)}
+
+/* ── FOOTER ───────────────────────────────── */
+.footer-bar{text-align:center;padding:16px 14px 24px;font-size:10px;color:var(--txt3);
+  border-top:1.5px solid var(--border);margin-top:24px;background:var(--bg2)}
+.footer-bar strong{color:var(--G1);font-weight:700}
+
+/* ════════════════════════════════════════════
+   PIN SCREEN
+════════════════════════════════════════════ */
+.pin-screen-bg{
+  position:fixed;inset:0;z-index:9999;
+  background:radial-gradient(ellipse at 50% 20%,#d6f0e0,#f0f7f2 70%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;
+}
+.pin-card-inner{
+  background:#fff;border:1.5px solid var(--border);border-radius:24px;
+  padding:36px 28px 26px;width:100%;max-width:360px;
+  box-shadow:0 8px 40px rgba(22,90,40,.14),0 2px 8px rgba(22,90,40,.08);
+}
+.pin-logo-box{width:76px;height:76px;border-radius:20px;margin:0 auto 18px;
+  background:var(--G1);display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 20px rgba(22,90,40,.3)}
+.pin-logo-letters{font-family:var(--sans);font-size:24px;font-weight:800;color:#fff;letter-spacing:1px}
+.pin-badge-tag{display:block;margin:0 auto 14px;padding:5px 16px;border-radius:20px;
+  border:1.5px solid var(--G2);background:var(--GL);
+  font-size:9px;font-weight:700;letter-spacing:3px;color:var(--G1);
+  font-family:var(--sans);width:fit-content}
+.pin-sys-title{font-family:var(--sans);font-size:26px;font-weight:800;text-align:center;
+  color:var(--txt);line-height:1.15;margin-bottom:6px}
+.pin-sys-desc{font-size:12px;color:var(--txt3);text-align:center;margin-bottom:22px;line-height:1.5}
+.pin-sys-desc strong{color:var(--G1);font-weight:700}
+.pin-dots-row{display:flex;gap:12px;justify-content:center;margin-bottom:24px}
+.pin-dot-el{width:22px;height:22px;border-radius:6px;border:2px solid var(--border2);
+  background:transparent;transition:all .18s}
+.pin-dot-el.filled{background:var(--G2);border-color:var(--G2);box-shadow:0 0 10px rgba(42,170,90,.4)}
+.pin-dot-el.err{background:var(--red);border-color:var(--red);animation:shake .35s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.pin-numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+.pin-key-btn{padding:19px 8px;border-radius:14px;font-size:23px;font-weight:700;cursor:pointer;
+  background:var(--bg3);border:1.5px solid var(--border);
+  color:var(--txt);font-family:var(--sans);transition:all .1s;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 4px rgba(22,90,40,.08)}
+.pin-key-btn:hover{background:var(--GL);border-color:var(--G2);transform:scale(.97);color:var(--G1)}
+.pin-key-btn:active{transform:scale(.91);background:var(--GM)}
+.pin-key-btn.del-btn{font-size:13px;font-weight:600;color:var(--txt3)}
+.pin-zero-pos{grid-column:2}
+.pin-error-msg{text-align:center;font-size:11px;color:var(--red);height:16px;margin-top:4px}
+.pin-copyright{text-align:center;font-size:10px;color:var(--txt4);margin-top:18px}
+</style>
+</head>
+<body>
+
+<!-- PIN SCREEN -->
+<div class="pin-screen-bg" id="pin-screen">
+  <div class="pin-card-inner">
+    <div class="pin-logo-box"><span class="pin-logo-letters">PR</span></div>
+    <span class="pin-badge-tag">ACCESS CONTROL SYSTEM</span>
+    <div class="pin-sys-title">PRIMA</div>
+    <p class="pin-sys-desc">Masukkan <strong>PIN 6 digit</strong> untuk akses</p>
+    <div class="pin-dots-row">
+      <div class="pin-dot-el" id="d0"></div><div class="pin-dot-el" id="d1"></div>
+      <div class="pin-dot-el" id="d2"></div><div class="pin-dot-el" id="d3"></div>
+      <div class="pin-dot-el" id="d4"></div><div class="pin-dot-el" id="d5"></div>
+    </div>
+    <div class="pin-numpad">
+      <button class="pin-key-btn" onclick="pp('1')">1</button>
+      <button class="pin-key-btn" onclick="pp('2')">2</button>
+      <button class="pin-key-btn" onclick="pp('3')">3</button>
+      <button class="pin-key-btn" onclick="pp('4')">4</button>
+      <button class="pin-key-btn" onclick="pp('5')">5</button>
+      <button class="pin-key-btn" onclick="pp('6')">6</button>
+      <button class="pin-key-btn" onclick="pp('7')">7</button>
+      <button class="pin-key-btn" onclick="pp('8')">8</button>
+      <button class="pin-key-btn" onclick="pp('9')">9</button>
+      <button class="pin-key-btn del-btn" onclick="pdel()">&#x232B; Hapus</button>
+      <button class="pin-key-btn pin-zero-pos" onclick="pp('0')">0</button>
+    </div>
+    <div class="pin-error-msg" id="pin-err"></div>
+    <div class="pin-copyright">&#169; Gentara Anugrah &middot; PRIMA</div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none">
+  <!-- MARQUEE -->
+  <div class="mq-wrap"><div class="mq-track" id="mq"></div></div>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="logo-box"><span class="logo-letters">PR</span></div>
+      <div style="margin-left:4px">
+        <div class="logo-name">PRIMA</div>
+        <div class="logo-sub">Platform Realisasi &amp; Intelligence Monitoring Agen46</div>
+      </div>
+      <div style="flex:1"></div>
+      <button class="nav-btn on" id="nb-dash" onclick="sv('dash')">Dashboard</button>
+      <button class="nav-btn" id="nb-tgt" onclick="sv('tgt')">Setting Target</button>
+      <button class="nav-btn" id="nb-rank" onclick="sv('rank')">Ranking</button>
+      <select class="psel" id="psel" onchange="sap(this.value)">
+        <option value="GTR">GTR — Gentara Anugrah</option>
+        <option value="PLP">PLP</option>
+        <option value="GRD">GRD</option>
+        <option value="ALS">ALS</option>
+        <option value="TLW">TLW</option>
+      </select>
+      <button class="theme-btn" id="tbtn" onclick="tgl()" title="Dark / Light Mode">☀️</button>
+    </div>
+  </div>
+
+  <!-- VIEWS -->
+  <div id="v-dash" class="main"></div>
+  <div id="v-tgt"  class="main" style="display:none"></div>
+  <div id="v-rank" class="main" style="display:none"></div>
+
+  <!-- FOOTER -->
+  <div class="footer-bar">
+    <strong>PRIMA</strong> &mdash; Platform Realisasi &amp; Intelligence Monitoring Agen46<br>
+    &copy; Gentara Anugrah &middot; All Rights Reserved &middot; 2026
+  </div>
+</div>
+
+<script>
+// ═══ PIN ══════════════════════════════════════════════════════════
+const PIN_OK='700115'; let pv='';
+function pp(d){if(pv.length>=6)return;pv+=d;upd();if(pv.length===6)setTimeout(chk,160);}
+function pdel(){pv=pv.slice(0,-1);upd();document.getElementById('pin-err').textContent='';}
+function upd(){for(let i=0;i<6;i++){const e=document.getElementById('d'+i);e.classList.toggle('filled',i<pv.length);e.classList.remove('err');}}
+function chk(){
+  if(pv===PIN_OK){
+    document.getElementById('pin-screen').style.opacity='0';
+    document.getElementById('pin-screen').style.transition='opacity .4s';
+    setTimeout(()=>{document.getElementById('pin-screen').style.display='none';document.getElementById('app').style.display='block';boot();},400);
+  } else {
+    for(let i=0;i<6;i++)document.getElementById('d'+i).classList.add('err');
+    document.getElementById('pin-err').textContent='PIN salah. Coba lagi.';
+    setTimeout(()=>{pv='';upd();},900);
+  }
+}
+
+// ═══ MARQUEE ══════════════════════════════════════════════════════
+function mkMarquee(){
+  const t=document.getElementById('mq');
+  const s='Selamat Datang di <b>PRIMA</b> \u2014 Platform Realisasi & Intelligence Monitoring Agen46 \u00A0\u00B7\u00A0 \u00A9 Gentara Anugrah \u00A0\u00B7\u00A0 ';
+  for(let i=0;i<10;i++){const el=document.createElement('span');el.className='mq-item';el.innerHTML=s;t.appendChild(el);}
+}
+
+// ═══ DATA ═════════════════════════════════════════════════════════
+const BC=9507156339;
+const MO=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+const PE=['GTR','PLP','GRD','ALS','TLW'];
+const BU={akuisisi:10,casa:25,produktivitas:20,fbi:25,transaksi:20};
+const BB={downline:5,wondr:5};
+const FL=['akuisisi','casa','produktivitas','fbi','transaksi','downline','wondr'];
+const GT=MO.map((_,i)=>({akuisisi:4,casa:75000000*(i+1),produktivitas:171+i*5,fbi:31500000,transaksi:10000,downline:1,wondr:50}));
+const er=()=>Object.fromEntries(FL.map(f=>[f,'']));
+const em=()=>MO.map(()=>er());
+let ST={},AP='GTR',AM=0,VW='dash',ER=false,ET=false,DARK=false;
+
+function initD(){
+  PE.forEach(p=>{
+    const r=em();
+    if(p==='GTR')[
+      {akuisisi:6,casa:9182606000,produktivitas:172,fbi:25367010,transaksi:9267,downline:0,wondr:61},
+      {akuisisi:20,casa:6587734550,produktivitas:189,fbi:30046440,transaksi:9884,downline:0,wondr:66},
+      {akuisisi:9,casa:6910012100,produktivitas:185,fbi:25035050,transaksi:9351,downline:0,wondr:57},
+      {akuisisi:13,casa:8000000000,produktivitas:170,fbi:25000000,transaksi:10000,downline:0,wondr:50}
+    ].forEach((d,i)=>r[i]={...d});
+    ST[p]={real:r,tgt:MO.map(()=>er())};
+  });
+}
+
+// ═══ COMPUTE ══════════════════════════════════════════════════════
+function pc(r,t){if(r===''||r===null||r===undefined||!Number(t))return null;return(Number(r)/Number(t))*100;}
+function cp(p,c){return p===null?null:Math.min(p,c);}
+function scr(p,b){return p===null?null:(p/100)*b;}
+function ca(real,rawT,isG,mi){
+  const t=isG?GT[mi]:{akuisisi:+rawT.akuisisi||0,casa:+rawT.casa||0,produktivitas:+rawT.produktivitas||0,fbi:+rawT.fbi||0,transaksi:+rawT.transaksi||0,downline:+rawT.downline||0,wondr:+rawT.wondr||0};
+  const ct=isG?BC+t.casa:t.casa;
+  const pA=pc(real.akuisisi,t.akuisisi),pC=pc(real.casa,ct),pP=pc(real.produktivitas,t.produktivitas),pF=pc(real.fbi,t.fbi),pT=pc(real.transaksi,t.transaksi);
+  const ss={akuisisi:scr(pA,BU.akuisisi),casa:scr(pC,BU.casa),produktivitas:scr(pP,BU.produktivitas),fbi:scr(pF,BU.fbi),transaksi:scr(pT,BU.transaksi)};
+  const tU=Object.values(ss).reduce((a,v)=>a+(v??0),0),ak=tU>=75;
+  const pD=cp(pc(real.downline,t.downline),200),pW=cp(pc(real.wondr,t.wondr),200);
+  const sD=ak?scr(pD,BB.downline):0,sW=ak?scr(pW,BB.wondr):0,tB=(sD??0)+(sW??0);
+  return{pA,pC,pP,pF,pT,ss,tU,pD,pW,sD,sW,tB,ak,total:tU+tB,ct,t};
+}
+
+// ═══ HELPERS ══════════════════════════════════════════════════════
+const fN=n=>(n===''||n===null||n===undefined)?'\u2014':typeof n==='number'?n.toLocaleString('id-ID'):String(n);
+const fP=p=>p===null?'\u2014':p.toFixed(2)+'%';
+const pClr=p=>p===null?'#8ab89a':p>=100?'#16a34a':p>=75?'#d97706':'#dc2626';
+const pBg=p=>p===null?'transparent':p>=100?'rgba(22,163,74,.07)':p>=75?'rgba(217,119,6,.07)':'rgba(220,38,38,.07)';
+const rClr=t=>t>=100?'#16a34a':t>=75?'#d97706':t>0?'#dc2626':'#8ab89a';
+const TH=['No','KPI','Target','Realisasi','Gap','% Achieve','Bobot','Score'];
+
+// ═══ RENDER ═══════════════════════════════════════════════════════
+function render(){
+  ['dash','tgt','rank'].forEach(v=>{
+    document.getElementById('nb-'+v).className='nav-btn'+(VW===v?' on':'');
+    document.getElementById('v-'+v).style.display=VW===v?'block':'none';
+  });
+  rDash();rTgt();rRank();
+}
+
+function kRow(row,real,edit){
+  const r=real[row.f],t=Number(row.tgt)||0,gap=r!==''&&r!==null&&r!==undefined?Number(r)-t:null;
+  const txt=DARK?'#d4f0df':'#0d2b18',dim=DARK?'#2a5438':'#8ab89a';
+  const cell=edit
+    ?`<input type="number" class="inp-field" value="${r??''}" oninput="ur(${AM},'${row.f}',this.value)">`
+    :`<span style="color:${(r!==''&&r!==null)?txt:dim}">${fN(r)}</span>`;
+  return`<tr style="opacity:${row.dim?'.4':'1'}">
+    <td class="tl" style="color:var(--txt4)">${row.no}</td>
+    <td class="tl" style="color:var(--txt);max-width:190px">${row.lbl}</td>
+    <td class="tr" style="color:var(--txt2)">${t?fN(t):'\u2014'}</td>
+    <td class="tr" style="background:${pBg(row.p)}">${cell}</td>
+    <td class="tr" style="color:${gap===null?'var(--txt4)':gap>=0?'#16a34a':'#dc2626'};font-weight:600">${gap===null?'\u2014':(gap>=0?'+':'')+fN(gap)}</td>
+    <td class="tr" style="color:${pClr(row.p)};font-weight:700">${fP(row.p)}</td>
+    <td class="tr" style="color:var(--txt3)">${row.b}%</td>
+    <td class="tr" style="font-weight:800;color:${pClr(row.s?row.s/row.b*100:null)}">${row.s===null?'\u2014':row.s.toFixed(2)+'%'}</td>
+  </tr>`;
+}
+
+function foot(lbl,bob,s){
+  const col=s!==null?pClr(s):'var(--txt4)';
+  return`<tfoot><tr>
+    <td colspan="6" class="tl" style="color:var(--txt3);font-size:11px;font-weight:600">${lbl}</td>
+    <td class="tr" style="color:var(--txt3)">${bob}</td>
+    <td class="tr" style="font-weight:800;font-size:14px;color:${col}">${s!==null&&s>0?s.toFixed(2)+'%':'\u2014'}</td>
+  </tr></tfoot>`;
+}
+function thead(){return`<thead><tr>${TH.map((h,i)=>`<th class="${i<=1?'tl':'tr'}">${h}</th>`).join('')}</tr></thead>`;}
+
+// DASHBOARD
+function rDash(){
+  const pd=ST[AP],isG=AP==='GTR',real=pd.real[AM],rawT=isG?GT[AM]:pd.tgt[AM];
+  const c=ca(real,rawT,isG,AM),rc=rClr(c.total);
+  const mt=MO.map((_,mi)=>{const r=pd.real[mi],t=isG?GT[mi]:pd.tgt[mi],h=Object.values(r).some(v=>v!==''&&v!==null);return h?ca(r,t,isG,mi).total:null;});
+  const vl=mt.filter(s=>s!==null),avg=vl.length?vl.reduce((a,b)=>a+b,0)/vl.length:null;
+
+  const mbs=MO.map((m,i)=>{
+    const r=pd.real[i],h=Object.values(r).some(v=>v!==''&&v!==null),t=isG?GT[i]:pd.tgt[i];
+    const mc=h?ca(r,t,isG,i):null,col=mc?rClr(mc.total):'var(--border2)';
+    const isA=AM===i;
+    return`<button class="mbtn" onclick="sam(${i})"
+      style="background:${isA?col:'var(--bg3)'};border-color:${isA?col:'var(--border)'};color:${isA?'#fff':h?col:'var(--txt4)'};
+      ${isA?'box-shadow:0 2px 6px rgba(22,90,40,.25)':''}">${m}${h?' \u2713':''}</button>`;
+  }).join('');
+
+  const scard=(lbl,val,col,sub)=>`<div class="scard" style="border:1.5px solid ${col}40;background:${col}0a">
+    <div class="scard-lbl">${lbl}</div>
+    <div class="scard-val" style="color:${col}">${val&&val>0?val.toFixed(2)+'%':'\u2014'}</div>
+    <div class="scard-sub">${sub}</div></div>`;
+
+  const uRows=[
+    {no:1,lbl:'Akuisisi Agen Baru',    f:'akuisisi',    tgt:c.t.akuisisi,    p:c.pA,b:BU.akuisisi,    s:c.ss.akuisisi},
+    {no:2,lbl:'Volume CASA Agen46',     f:'casa',        tgt:c.ct,            p:c.pC,b:BU.casa,         s:c.ss.casa},
+    {no:3,lbl:'Produktivitas Agen46',   f:'produktivitas',tgt:c.t.produktivitas,p:c.pP,b:BU.produktivitas,s:c.ss.produktivitas},
+    {no:4,lbl:'Fee Based Income (FBI)', f:'fbi',         tgt:c.t.fbi,         p:c.pF,b:BU.fbi,          s:c.ss.fbi},
+    {no:5,lbl:'Number of Transaction',  f:'transaksi',   tgt:c.t.transaksi,   p:c.pT,b:BU.transaksi,    s:c.ss.transaksi},
+  ];
+  const bRows=[
+    {no:1,lbl:'Akuisisi Downline Super Agen/KDKMP',f:'downline',tgt:c.t.downline,p:c.pD,b:BB.downline,s:c.sD,dim:!c.ak},
+    {no:2,lbl:'Referral Wondr',                     f:'wondr',  tgt:c.t.wondr,  p:c.pW,b:BB.wondr,  s:c.sW,dim:!c.ak},
+  ];
+  const isAktif=c.ak;
+  const ebStyle=`background:${ER?'var(--G1)':'var(--bg3)'};border:1.5px solid ${ER?'var(--G1)':'var(--border)'};color:${ER?'#fff':'var(--txt3)'}`;
+
+  const mstrip=vl.length?`<div style="padding:12px 14px;background:var(--bg2);border-radius:10px;border:1.5px solid var(--border);box-shadow:var(--shadow)">
+    <div style="font-size:9px;color:var(--txt4);letter-spacing:2px;margin-bottom:8px;font-weight:600">RINGKASAN BULANAN &middot; ${AP}</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">
+      ${mt.map((s,i)=>s!==null?`<div class="mchip" style="background:${rClr(s)}0d;border:1.5px solid ${rClr(s)}30"><div class="mchip-l">${MO[i]}</div><div class="mchip-v" style="color:${rClr(s)}">${s.toFixed(1)}%</div></div>`:'').join('')}
+      <div class="mchip" style="background:rgba(22,163,74,.08);border:1.5px solid rgba(22,163,74,.25)">
+        <div class="mchip-l">AVG</div><div class="mchip-v" style="color:#16a34a">${avg?avg.toFixed(1)+'%':'\u2014'}</div>
+      </div>
+    </div></div>`:'';
+
+  document.getElementById('v-dash').innerHTML=`
+    <div style="display:flex;gap:10px;margin-bottom:14px;align-items:flex-start;flex-wrap:wrap">
+      <div style="flex:1;min-width:230px">
+        <div style="font-size:9px;color:var(--txt4);letter-spacing:2px;margin-bottom:8px;font-weight:600">PILIH BULAN &middot; ${AP}</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">${mbs}</div>
+      </div>
+      <div style="display:flex;gap:8px">${scard('BULAN INI',c.total,rc,MO[AM]+' 2026')}${scard('RATA-RATA',avg,avg?rClr(avg):'#8ab89a',vl.length+' bulan')}</div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:10px">
+      <button class="ebtn" style="${ebStyle}" onclick="ter()">${ER?'\u2713 Selesai Input':'\u270e Input Realisasi'}</button>
+    </div>
+    <div class="sec">
+      <div class="sec-hd"><div><span class="sec-ttl">KPI Utama</span><span class="sec-sub">Bobot 100% &middot; Tidak ada CAP</span></div></div>
+      <div class="sec-bd"><table>${thead()}<tbody>${uRows.map(r=>kRow(r,real,ER)).join('')}</tbody>${foot('Total KPI Utama','100%',c.tU)}</table></div>
+    </div>
+    <div class="sec">
+      <div class="sec-hd">
+        <div><span class="sec-ttl">KPI Booster</span><span class="sec-sub">CAP 200% &middot; Aktif jika KPI Utama &ge; 75%</span></div>
+        <span class="badge" style="background:${isAktif?'rgba(22,163,74,.12)':'rgba(220,38,38,.1)'};color:${isAktif?'#16a34a':'#dc2626'};border:1px solid ${isAktif?'rgba(22,163,74,.3)':'rgba(220,38,38,.25)'}">${isAktif?'AKTIF':'TIDAK AKTIF'}</span>
+      </div>
+      <div class="sec-bd"><table>${thead()}<tbody>${bRows.map(r=>kRow(r,real,ER)).join('')}</tbody>${foot('Total KPI Booster','10%',c.ak?c.tB:null)}</table></div>
+    </div>
+    <div style="padding:14px 20px;border-radius:12px;background:${rc}0a;border:1.5px solid ${rc}35;
+      display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;box-shadow:var(--shadow)">
+      <div>
+        <div style="font-size:9px;color:var(--txt3);letter-spacing:2px;font-weight:600">TOTAL SCORE AKHIR</div>
+        <div style="font-size:11px;color:var(--txt4);margin-top:2px">${AP} &middot; ${MO[AM]} 2026</div>
+      </div>
+      <div style="font-size:32px;font-weight:800;color:${rc}">${c.total>0?c.total.toFixed(2)+'%':'\u2014'}</div>
+    </div>
+    ${mstrip}`;
+}
+
+// SETTING TARGET
+function rTgt(){
+  const pd=ST[AP],isG=AP==='GTR';
+  const hdrs=['Bulan','Akuisisi','CASA','Produktivitas','FBI','Transaksi','Downline','Wondr'];
+  const flds=['akuisisi','casa','produktivitas','fbi','transaksi','downline','wondr'];
+  const ebStyle=`background:${ET?'var(--G1)':'var(--bg3)'};border:1.5px solid ${ET?'var(--G1)':'var(--border)'};color:${ET?'#fff':'var(--txt3)'}`;
+  let body='';
+  if(isG){
+    body=GT.map((t,i)=>`<tr>
+      <td class="tl" style="color:var(--txt);font-weight:600">${MO[i]}</td>
+      <td class="tr">${fN(t.akuisisi)}</td><td class="tr">${fN(BC+t.casa)}</td>
+      <td class="tr">${fN(t.produktivitas)}</td><td class="tr">${fN(t.fbi)}</td>
+      <td class="tr">${fN(t.transaksi)}</td><td class="tr">${fN(t.downline)}</td><td class="tr">${fN(t.wondr)}</td>
+    </tr>`).join('');
+  } else {
+    body=MO.map((m,mi)=>{
+      const t=pd.tgt[mi];
+      const cells=flds.map(f=>{
+        const v=t[f];
+        return`<td class="tr" style="padding:4px 8px">${ET
+          ?`<input type="number" class="inp-field" value="${v}" oninput="ut(${mi},'${f}',this.value)" placeholder="-">`
+          :`<span style="color:${v!==''?'var(--txt)':'var(--txt4)'}">${v!==''?fN(+v):'\u2014'}</span>`}</td>`;
+      }).join('');
+      return`<tr><td class="tl" style="color:var(--txt);font-weight:600">${m}</td>${cells}</tr>`;
+    }).join('');
+  }
+  document.getElementById('v-tgt').innerHTML=`
+    <div style="margin-bottom:14px">
+      <div style="font-size:18px;font-weight:800;color:var(--txt)">Setting Target</div>
+      <div style="font-size:11px;color:var(--txt3);margin-top:3px">${isG?'GTR \u2014 Target terkunci (data resmi 2026)':`${AP} \u2014 Input target per bulan`}</div>
+    </div>
+    ${!isG?`<div style="display:flex;justify-content:flex-end;margin-bottom:10px"><button class="ebtn" style="${ebStyle}" onclick="tet()">${ET?'\u2713 Selesai Edit':'\u270e Edit Target'}</button></div>`:''}
+    <div class="sec"><div class="sec-bd">
+      <table style="min-width:700px">
+        <thead><tr>${hdrs.map((h,i)=>`<th class="${i===0?'tl':'tr'}">${h}</th>`).join('')}</tr></thead>
+        <tbody>${body}</tbody>
+      </table>
+    </div></div>`;
+}
+
+// RANKING
+function rRank(){
+  const rows=PE.map(p=>{
+    const d=ST[p],sc2=MO.map((_,mi)=>{const r=d.real[mi],t=p==='GTR'?GT[mi]:d.tgt[mi],h=Object.values(r).some(v=>v!==''&&v!==null);return h?ca(r,t,p==='GTR',mi).total:null;});
+    const fl=sc2.filter(s=>s!==null),avg=fl.length?fl.reduce((a,b)=>a+b,0)/fl.length:null;
+    return{name:p,avg,n:fl.length,sc:sc2};
+  }).sort((a,b)=>(b.avg??-1)-(a.avg??-1));
+
+  const rkStyle=[
+    ['rgba(217,119,6,.15)','#d97706'],
+    ['rgba(148,163,184,.1)','#64748b'],
+    ['rgba(180,83,9,.1)','#b45309']
+  ];
+  const trs=rows.map((row,ri)=>{
+    const col=row.avg?rClr(row.avg):'#8ab89a';
+    const rk=ri<3?`<span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:800;background:${rkStyle[ri][0]};color:${rkStyle[ri][1]}">${ri+1}</span>`:`<span style="color:var(--txt4);font-size:12px">${ri+1}</span>`;
+    const mc=MO.map((_,mi)=>{const s=row.sc[mi];return`<td class="tr" style="color:${s?pClr(s):'var(--border2)'}">${s?s.toFixed(1)+'%':'\u2014'}</td>`;}).join('');
+    const st=row.avg
+      ?`<span class="badge" style="background:${col}12;color:${col};border:1px solid ${col}30">${row.avg>=100?'\u2713 ON TARGET':row.avg>=75?'\u26a0 PERHATIAN':'\u2717 KRITIS'}</span>`
+      :`<span style="font-size:9px;color:var(--txt4)">NO DATA</span>`;
+    return`<tr><td class="tl">${rk}</td><td class="tl" style="color:var(--txt);font-weight:700">${row.name}</td><td class="tr" style="color:var(--txt3)">${row.n}</td><td class="tr" style="font-weight:800;color:${col};font-size:14px">${row.avg?row.avg.toFixed(2)+'%':'\u2014'}</td>${mc}<td class="tr">${st}</td></tr>`;
+  }).join('');
+
+  const cards=rows.map((row,ri)=>{
+    const col=row.avg?rClr(row.avg):'#8ab89a';
+    return`<div class="rcard" style="background:${col}09;border:1.5px solid ${col}28">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <span style="font-size:13px;font-weight:800;color:var(--txt)">${row.name}</span>
+        <span style="font-size:10px;color:var(--txt4);font-weight:600">#${ri+1}</span>
+      </div>
+      <div style="font-size:24px;font-weight:800;color:${col};line-height:1">${row.avg?row.avg.toFixed(2)+'%':'\u2014'}</div>
+      <div style="font-size:9px;color:var(--txt3);margin-top:4px">${row.n} bulan data</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('v-rank').innerHTML=`
+    <div style="margin-bottom:14px">
+      <div style="font-size:18px;font-weight:800;color:var(--txt)">Ranking &amp; Average</div>
+      <div style="font-size:11px;color:var(--txt3);margin-top:3px">Perbandingan pencapaian rata-rata semua pengelola &middot; 2026</div>
+    </div>
+    <div class="sec" style="margin-bottom:14px">
+      <div class="sec-bd"><table style="min-width:900px">
+        <thead><tr>${['#','Pengelola','Data','Avg',...MO,'Status'].map((h,i)=>`<th class="${i<=1?'tl':'tr'}">${h}</th>`).join('')}</tr></thead>
+        <tbody>${trs}</tbody>
+      </table></div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">${cards}</div>`;
+}
+
+// ═══ ACTIONS ══════════════════════════════════════════════════════
+function sv(v){VW=v;ER=false;ET=false;render();}
+function sap(p){AP=p;AM=0;ER=false;ET=false;render();}
+function sam(i){AM=i;ER=false;render();}
+function ter(){ER=!ER;render();}
+function tet(){ET=!ET;render();}
+function ur(mi,f,v){ST[AP].real[mi][f]=v===''?'':isNaN(+v)?'':+v;rDash();rRank();}
+function ut(mi,f,v){ST[AP].tgt[mi][f]=v;rDash();rRank();}
+
+function tgl(){
+  DARK=!DARK;
+  document.body.classList.toggle('dark',DARK);
+  document.getElementById('tbtn').textContent=DARK?'☀️':'🌙';
+}
+
+// ═══ BOOT ═════════════════════════════════════════════════════════
+function boot(){mkMarquee();initD();render();}
+</script>
+</body>
+</html>
